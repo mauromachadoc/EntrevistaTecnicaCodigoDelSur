@@ -1,6 +1,6 @@
 const express = require('express');
 const { body } = require('express-validator');
-const { registerUser } = require('../controllers/auth');
+const { registerUser, loginUser } = require('../controllers/auth');
 
 const router = express.Router();
 
@@ -14,5 +14,10 @@ router.post('/auth/register', [
     body('password').matches(/[0-9]/).withMessage('Password must contain at least one number'),
     body('password').matches(/[^a-zA-Z0-9]/).withMessage('Password must contain at least one special character'),
 ], registerUser);
+
+router.post('/auth/login', [
+    body('email').isEmail().withMessage('Invalid email format'),
+    body('password').notEmpty().withMessage('Password is required'),
+], loginUser);
 
 module.exports = router;

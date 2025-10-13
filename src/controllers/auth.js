@@ -1,6 +1,8 @@
 const db = require('../helpers/database');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
+const JWT_WEB_TOKEN = process.env.JWT_WEB_TOKEN;
+const jwt = require('jsonwebtoken');
 
 async function registerUser(req, res, next) {
     try {
@@ -30,6 +32,45 @@ async function registerUser(req, res, next) {
     }
 }
 
-module.exports = { registerUser };
+async function loginUser(req, res, next) {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ message: 'Email and password are required.' });
+        }
+        
+        const user = await new Promise((resolve, reject) => {
+            db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
+        
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid email or password.' });
+        }
+        
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
+            return res.status(401).json({ message: 'Invalid email or password.' });
+        }
+        
+        const token = jwt.sign(
+            { id: user.id, email: user.email, jti: uuidv4() }, 
+            JWT_WEB_TOKEN, 
+            { expiresIn: '48h' }
+        );
+
+        res.status(200).json({
+            message: 'Login successful',
+            token
+        });
+        
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports = { registerUser, loginUser };
 
 
