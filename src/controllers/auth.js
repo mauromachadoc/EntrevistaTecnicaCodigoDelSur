@@ -1,7 +1,7 @@
 const db = require('../helpers/database');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
-const JWT_WEB_TOKEN = process.env.JWT_WEB_TOKEN;
+const JWT_SECRET = process.env.JWT_SECRET;
 const jwt = require('jsonwebtoken');
 
 async function registerUser(req, res, next) {
@@ -57,7 +57,7 @@ async function loginUser(req, res, next) {
         
         const token = jwt.sign(
             { id: user.id, email: user.email, jti: uuidv4() }, 
-            JWT_WEB_TOKEN, 
+            JWT_SECRET, 
             { expiresIn: '48h' }
         );
 
