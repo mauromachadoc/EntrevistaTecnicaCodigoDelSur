@@ -19,6 +19,7 @@ En el presente repositorio se encuentra desarrollada una API RESTful con Node.js
   - Encriptación de contraseñas con Bcrypt
   - Autenticación mediante JWT (JSON Web Tokens)
   - Generación de identificadores únicos con uuidv4
+- **Resource files**: Sistema de mensajes externalizados con *deferred binding* que permite modificar mensajes de error y respuestas sin recompilar, con recarga automática en tiempo de ejecución
 - **Testing**: Tests unitarios con Jest para el endpoint de favoritos (`/api/favorites`)
 - **Validación**: Manejo de errores y validaciones para casos como:
   - Películas duplicadas en favoritos (409)
@@ -48,7 +49,10 @@ EntrevistaTecnicaCodigoDelSur/
 │   │   └── movie.js          # Búsqueda de películas en TMDB
 │   ├── helpers/              # Utilidades
 │   │   ├── authenticator.js  # Middleware de autenticación JWT
-│   │   └── database.js       # Configuración de SQLite
+│   │   ├── database.js       # Configuración de SQLite
+│   │   └── messages.js       # Helper para gestión de mensajes
+│   ├── resources/            # Archivos de recursos externos
+│   │   └── messages.json     # Mensajes de error y éxito (hot-reload)
 │   └── routes/               # Definición de rutas
 │       ├── auth.js
 │       ├── favorite.js
