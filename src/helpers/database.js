@@ -1,10 +1,22 @@
+/**
+ * Database initialization and configuration module
+ * @module database
+ * @summary Initializes SQLite database connection and creates required tables (users, movies, favorites, jwt_blacklist)
+ */
+
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
 const dbPath = path.join(__dirname, '..', '..', 'movies.db');
+
+/**
+ * SQLite database instance
+ * @type {sqlite3.Database}
+ * @description Database connection to movies.db with foreign keys enabled
+ */
 const db = new sqlite3.Database(dbPath);
 
-// Habilitar foreign keys (están deshabilitadas por defecto en SQLite)
+// Enable foreign keys (disabled by default in SQLite)
 db.run('PRAGMA foreign_keys = ON');
 
 db.serialize(() => {
@@ -64,4 +76,10 @@ db.serialize(() => {
     console.log('Database initialized successfully');
 });
 
+/**
+ * Exports the configured SQLite database instance
+ * @exports db
+ * @type {sqlite3.Database}
+ * @description Configured database instance with tables: users, movies, favorites, jwt_blacklist
+ */
 module.exports = db;

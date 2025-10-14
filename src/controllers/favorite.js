@@ -3,6 +3,18 @@ const db = require('../helpers/database');
 const axios = require('axios');
 const { getMessage } = require('../helpers/messages');
 
+/**
+ * Adds a movie to the user's favorites list
+ * @summary Fetches movie details from TMDB API if not in database, stores the movie, and adds it to user's favorites
+ * @param {Object} req - Express request object
+ * @param {Object} req.user - Authenticated user object (populated by auth middleware)
+ * @param {string} req.user.id - User's unique identifier
+ * @param {Object} req.body - Request body
+ * @param {number} req.body.movieId - TMDB movie ID to add to favorites
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @returns {Object} JSON response with success message (201) or error message (400/404/409)
+ */
 async function addFavoriteMovie(req, res, next) {
     try {
         const userId = req.user.id;
@@ -85,6 +97,16 @@ async function addFavoriteMovie(req, res, next) {
     } 
 }
 
+/**
+ * Retrieves all favorite movies for the authenticated user
+ * @summary Gets user's favorite movies from database and assigns random suggestion scores for sorting
+ * @param {Object} req - Express request object
+ * @param {Object} req.user - Authenticated user object (populated by auth middleware)
+ * @param {string} req.user.id - User's unique identifier
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @returns {Object} JSON array of favorite movies sorted by suggestionForTodayScore (200)
+ */
 async function getFavoriteMovies(req, res, next) {
     try {
         const userId = req.user.id;
