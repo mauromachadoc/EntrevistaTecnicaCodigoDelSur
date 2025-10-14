@@ -71,6 +71,30 @@ async function loginUser(req, res, next) {
     }
 }
 
-module.exports = { registerUser, loginUser };
+async function logoutUser(req, res, next) {
+    try {
+        const token = req.headers['authorization']?.split(' ')[1];
+        if (!token) {
+            return res.status(400).json({ message: 'No token provided.' });
+        }
+        
+
+        const stmt = db.prepare(`
+            INSERT INTO jwt_blacklist (token)
+            VALUES (?)
+        `);
+        stmt.run(token, function(err) {
+            if (err) {
+                return next(err);
+            }
+            res.status(200).json({ message: 'Logout successful.' });
+        });
+        stmt.finalize();
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports = { registerUser, loginUser, logoutUser };
 
 

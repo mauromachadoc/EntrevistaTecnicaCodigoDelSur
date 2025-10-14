@@ -10,6 +10,16 @@ async function addFavoriteMovie(req, res, next) {
             return res.status(400).json({ message: 'movieId is required.' });
         }
 
+        const userExists = await new Promise((resolve, reject) => {
+            db.get('SELECT id FROM users WHERE id = ?', [userId], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
+
+        if (!userExists) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
         
         const movieAlreadyInDB = await new Promise((resolve, reject) => {
             db.get('SELECT * FROM movies WHERE id = ?', [movieId], (err, row) => {

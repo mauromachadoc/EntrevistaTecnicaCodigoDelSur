@@ -1,6 +1,6 @@
 const express = require('express');
 const { body } = require('express-validator');
-const { registerUser, loginUser } = require('../controllers/auth');
+const { registerUser, loginUser, logoutUser } = require('../controllers/auth');
 
 const router = express.Router();
 
@@ -19,5 +19,7 @@ router.post('/auth/login', [
     body('email').isEmail().withMessage('Invalid email format'),
     body('password').notEmpty().withMessage('Password is required'),
 ], loginUser);
+
+router.post('/auth/logout', logoutUser);
 
 module.exports = router;
