@@ -1,13 +1,16 @@
 const TMDB_KEY = process.env.TMDB_KEY;
 const db = require('../helpers/database');
 const axios = require('axios');
+const { getMessage } = require('../helpers/messages');
 
 async function addFavoriteMovie(req, res, next) {
     try {
         const userId = req.user.id;
         const {movieId} = req.body;
         if (!movieId) {
-            return res.status(400).json({ message: 'movieId is required.' });
+            return res.status(400).json({ 
+                message: getMessage('errors.auth.movieIdRequired') 
+            });
         }
 
         const userExists = await new Promise((resolve, reject) => {
@@ -18,7 +21,9 @@ async function addFavoriteMovie(req, res, next) {
         });
 
         if (!userExists) {
-            return res.status(404).json({ message: 'User not found.' });
+            return res.status(404).json({ 
+                message: getMessage('errors.auth.userNotFound') 
+            });
         }
         
         const movieAlreadyInDB = await new Promise((resolve, reject) => {
@@ -51,7 +56,9 @@ async function addFavoriteMovie(req, res, next) {
                 insertMovieStmt.run(movie.id, movie.adult ? 1 : 0, movie.backdrop_path, JSON.stringify(movie.genre_ids), movie.original_language, movie.original_title, movie.overview, movie.popularity, movie.poster_path, movie.release_date, movie.title, movie.video ? 1 : 0, movie.vote_average, movie.vote_count);
                 insertMovieStmt.finalize();
             } catch (axiosError) {
-                return res.status(404).json({ message: 'Movie not available.' });
+                return res.status(404).json({ 
+                    message: getMessage('errors.auth.movieNotAvailable') 
+                });
             }
         }
 
@@ -62,11 +69,15 @@ async function addFavoriteMovie(req, res, next) {
         insertFavoriteStmt.run(movieId, userId, function(err) {
             if (err) {
                 if (err.code === 'SQLITE_CONSTRAINT') {
-                    return res.status(409).json({ message: 'Movie already in favorites.' });
+                    return res.status(409).json({ 
+                        message: getMessage('errors.auth.movieAlreadyInFavorites') 
+                    });
                 }
                 return next(err);
             }
-            res.status(201).json({ message: 'Movie added to favorites.' });
+            res.status(201).json({ 
+                message: getMessage('success.favorite.movieAdded') 
+            });
         });
         insertFavoriteStmt.finalize();
     } catch (error) {
