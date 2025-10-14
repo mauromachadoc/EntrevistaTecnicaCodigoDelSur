@@ -4,6 +4,9 @@ const path = require('path');
 const dbPath = path.join(__dirname, '..', '..', 'movies.db');
 const db = new sqlite3.Database(dbPath);
 
+// Habilitar foreign keys (están deshabilitadas por defecto en SQLite)
+db.run('PRAGMA foreign_keys = ON');
+
 db.serialize(() => {
     
     db.run(`
@@ -54,10 +57,7 @@ db.serialize(() => {
         CREATE TABLE IF NOT EXISTS jwt_blacklist (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             token TEXT UNIQUE NOT NULL,
-            userId TEXT NOT NULL,
-            blacklisted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            expires_at DATETIME NOT NULL,
-            FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+            blacklisted_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     `);
 
