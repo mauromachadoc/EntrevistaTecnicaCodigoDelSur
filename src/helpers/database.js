@@ -21,16 +21,16 @@ db.serialize(() => {
     db.run(`
         CREATE TABLE IF NOT EXISTS movies (
             id INTEGER PRIMARY KEY,
+            adult INTEGER DEFAULT 0,
             backdrop_path TEXT,
-            title TEXT NOT NULL,
+            genre_ids TEXT,
+            original_language TEXT,
             original_title TEXT,
             overview TEXT,
-            poster_path TEXT,
-            media_type TEXT,
-            adult INTEGER DEFAULT 0,
-            original_language TEXT,
             popularity REAL,
+            poster_path TEXT,
             release_date TEXT,
+            title TEXT NOT NULL,
             video INTEGER DEFAULT 0,
             vote_average REAL,
             vote_count INTEGER,
@@ -40,13 +40,12 @@ db.serialize(() => {
 
     db.run(`
         CREATE TABLE IF NOT EXISTS favorites (
-            id TEXT PRIMARY KEY,
             movieId INTEGER NOT NULL,
             userId TEXT NOT NULL,
             addedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (movieId, userId),
             FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
-            FOREIGN KEY (movieId) REFERENCES movies(id) ON DELETE CASCADE,
-            UNIQUE(movieId, userId)
+            FOREIGN KEY (movieId) REFERENCES movies(id) ON DELETE CASCADE
         )
     `);
 
