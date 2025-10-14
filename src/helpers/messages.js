@@ -11,7 +11,7 @@ function loadMessages() {
         const stats = fs.statSync(messagesPath);
         const currentModified = stats.mtime.getTime();
 
-        // Hacemos la carga solo si hay cambios
+        // load messages if not cached or file has changed
         if (!messagesCache || lastModified !== currentModified) {
             const fileContent = fs.readFileSync(messagesPath, 'utf8');
             messagesCache = JSON.parse(fileContent);
