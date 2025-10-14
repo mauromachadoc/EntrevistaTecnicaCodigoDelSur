@@ -36,19 +36,23 @@ async function addFavoriteMovie(req, res, next) {
                 }
             };
 
-            const response = await axios.get(
-                `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
-                config
-            );
+            try {
+                const response = await axios.get(
+                    `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
+                    config
+                );
 
-            const movie = response.data;
+                const movie = response.data;
 
-            const insertMovieStmt = db.prepare(`
-                INSERT OR IGNORE INTO movies (id, adult, backdrop_path, genre_ids, original_language, original_title, overview, popularity, poster_path, release_date, title, video, vote_average, vote_count)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `);
-            insertMovieStmt.run(movie.id, movie.adult ? 1 : 0, movie.backdrop_path, JSON.stringify(movie.genre_ids), movie.original_language, movie.original_title, movie.overview, movie.popularity, movie.poster_path, movie.release_date, movie.title, movie.video ? 1 : 0, movie.vote_average, movie.vote_count);
-            insertMovieStmt.finalize();
+                const insertMovieStmt = db.prepare(`
+                    INSERT OR IGNORE INTO movies (id, adult, backdrop_path, genre_ids, original_language, original_title, overview, popularity, poster_path, release_date, title, video, vote_average, vote_count)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `);
+                insertMovieStmt.run(movie.id, movie.adult ? 1 : 0, movie.backdrop_path, JSON.stringify(movie.genre_ids), movie.original_language, movie.original_title, movie.overview, movie.popularity, movie.poster_path, movie.release_date, movie.title, movie.video ? 1 : 0, movie.vote_average, movie.vote_count);
+                insertMovieStmt.finalize();
+            } catch (axiosError) {
+                return res.status(404).json({ message: 'Movie not available.' });
+            }
         }
 
         const insertFavoriteStmt = db.prepare(`
