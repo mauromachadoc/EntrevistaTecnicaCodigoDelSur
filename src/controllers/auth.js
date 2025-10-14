@@ -3,12 +3,13 @@ const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
 const JWT_SECRET = process.env.JWT_SECRET;
 const jwt = require('jsonwebtoken');
+const { getMessage } = require('../helpers/messages');
 
 async function registerUser(req, res, next) {
     try {
         const { email, firstName, lastName, password } = req.body;
         if (!email || !firstName || !lastName || !password) {
-            return res.status(400).json({ message: 'All fields are required.' });
+            return res.status(400).json({ message: getMessage('errors.auth.allFieldsRequired') });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const userId = uuidv4();
@@ -20,11 +21,11 @@ async function registerUser(req, res, next) {
         stmt.run(userId, email, firstName, lastName, hashedPassword, function(err) {
             if (err) {
                 if (err.code === 'SQLITE_CONSTRAINT') {
-                    return res.status(409).json({ message: 'Email already in use.' });
+                    return res.status(409).json({ message: getMessage('errors.auth.emailAlreadyInUse') });
                 }
                 return next(err);
             }   
-            res.status(201).json({ message: 'User registered successfully.', userId });
+            res.status(201).json({ message: getMessage('success.auth.userRegistered'), userId });
         });
         stmt.finalize();
     } catch (error) {   
@@ -36,7 +37,7 @@ async function loginUser(req, res, next) {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
-            return res.status(400).json({ message: 'Email and password are required.' });
+            return res.status(400).json({ message: getMessage('errors.auth.emailPasswordRequired') });
         }
         
         const user = await new Promise((resolve, reject) => {
@@ -47,12 +48,12 @@ async function loginUser(req, res, next) {
         });
         
         if (!user) {
-            return res.status(401).json({ message: 'Invalid email or password.' });
+            return res.status(401).json({ message: getMessage('errors.auth.invalidCredentials') });
         }
         
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
-            return res.status(401).json({ message: 'Invalid email or password.' });
+            return res.status(401).json({ message: getMessage('errors.auth.invalidCredentials') });
         }
         
         const token = jwt.sign(
@@ -62,7 +63,7 @@ async function loginUser(req, res, next) {
         );
 
         res.status(200).json({
-            message: 'Login successful',
+            message: getMessage('success.auth.loginSuccessful'),
             token
         });
         
@@ -75,7 +76,7 @@ async function logoutUser(req, res, next) {
     try {
         const token = req.headers['authorization']?.split(' ')[1];
         if (!token) {
-            return res.status(400).json({ message: 'No token provided.' });
+            return res.status(400).json({ message: getMessage('errors.auth.noTokenProvided') });
         }
         
 
@@ -87,7 +88,7 @@ async function logoutUser(req, res, next) {
             if (err) {
                 return next(err);
             }
-            res.status(200).json({ message: 'Logout successful.' });
+            res.status(200).json({ message: getMessage('success.auth.logoutSuccessful') });
         });
         stmt.finalize();
     } catch (error) {
