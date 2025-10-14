@@ -6,7 +6,7 @@
       "emailPasswordRequired": "Email and password are required.",
       "invalidCredentials": "Invalid email or password.",
       "noTokenProvided": "No token provided.",
-      "tokenBlacklisted": "Skibidi toilet.",
+      "tokenBlacklisted": "Token has been blacklisted.",
       "invalidToken": "Invalid token",
       "movieIdRequired": "movieId is required.",
       "userNotFound": "User not found.",
