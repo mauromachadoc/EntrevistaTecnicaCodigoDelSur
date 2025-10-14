@@ -87,6 +87,32 @@
 			"response": []
 		},
 		{
+			"name": "GetMovies by keyword",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/movies?search=Princess%20Mononoke",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"movies"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "Princess%20Mononoke"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "AddFavorite",
 			"request": {
 				"method": "POST",
@@ -94,6 +120,38 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"movieId\" : \"1053008\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/favorites",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"favorites"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetFavorites",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -142,7 +200,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImIzMjMzN2VkLWE1ZTgtNGIxYi05Y2MyLTBjNWI1NjhhZGFkYiIsImVtYWlsIjoiY2FybG9zLmxvcGV6QGV4YW1wbGUuY29tIiwianRpIjoiZGVhMDAwYjEtZTU4NS00MDA2LTg1Y2YtODQ1N2FhZTQzODVjIiwiaWF0IjoxNzYwNDY2OTg0LCJleHAiOjE3NjA2Mzk3ODR9.PqNORZ3KlUJNHTfZIRHBJtXyqpLDARmDIT05oWFSHLs",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImIzMjMzN2VkLWE1ZTgtNGIxYi05Y2MyLTBjNWI1NjhhZGFkYiIsImVtYWlsIjoiY2FybG9zLmxvcGV6QGV4YW1wbGUuY29tIiwianRpIjoiMTI5YTdkN2QtMzQ1Ny00MGVkLTlhOGItOTE1MGE5MzgzODE1IiwiaWF0IjoxNzYwNDc3MzQ4LCJleHAiOjE3NjA2NTAxNDh9.HQhPalTcxckLPdFAM3XEjDaeAvBhgMRVIfVJHvxRQEg",
 				"type": "string"
 			}
 		]
