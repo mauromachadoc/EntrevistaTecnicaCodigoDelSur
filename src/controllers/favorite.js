@@ -55,11 +55,12 @@ async function addFavoriteMovie(req, res, next) {
 
             try {
                 const response = await axios.get(
-                    `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
+                    `https://api.themoviedb.org/3/movie/${movieId}`,
                     config
                 );
 
                 const movie = response.data;
+                console.log('Fetched movie from TMDB:', movie.id, movie.title);
 
                 const insertMovieStmt = db.prepare(`
                     INSERT OR IGNORE INTO movies (id, adult, backdrop_path, genre_ids, original_language, original_title, overview, popularity, poster_path, release_date, title, video, vote_average, vote_count)
